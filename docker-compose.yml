@@ -1,0 +1,14 @@
+version: '3'
+
+volumes:
+  .:
+
+services:
+  go_slack:
+    build: .
+    working_dir: /root/go/src/gotut
+    volumes:
+      - ./src:/root/go/src/gotut
+    ports:
+      - "8002:8000"
+      - "2225:22"
