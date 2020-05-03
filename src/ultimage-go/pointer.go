@@ -1,5 +1,25 @@
 package main
 
+/*
+Pointer - value that contains the address of a variable. It is the location at which a value is stored. Not every value has an address, but every variable does.
+
+「
+var x int
+&x - address of x - yields a pointer to integer variable, that is a value of type *int
+*int - pointer to int
+p := &x
+fmt.Println(*p) // “1”
+*p = 2 // equivalent to x = 2
+fmt.Println(x) // “2”
+」
+
+& operator yields the address of a variable, and * operator retrieves the variable that the pointer refers to.
+Zero value of a pointer is nil.
+Pointer serves only 1 purpose: sharing. Pointer shares values across the program boundary (ex.: function calls).
+
+*/
+
+
 
 // Pointer serves 1 purpose: sharing
 // Pointer shares values across the program boundary (ex.: function calls)
