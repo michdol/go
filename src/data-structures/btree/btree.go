@@ -47,6 +47,43 @@ func (t *Tree) insert(data int) {
     }
 }
 
+func (t *Tree) delete(data int) {
+    var current, parent *Node
+    current = t.root
+    if current == nil {
+        return false
+    }
+    for {
+        if current.data == data {
+            break
+        }
+        if data < current.data {
+            current = current.left
+        } else {
+            current = current.right
+        }
+    }
+    parent = current.parent
+    if current.left != nil && current.right != nil {
+        if parent.left == current {
+            parent.left = current.left
+            parent.left.right = current.right
+        } else {
+            
+        }
+    } else if current.left != nil && current.right == nil {
+
+    } else if current.right != nil && current.left == nil {
+
+    } else {
+        if parent.left == current {
+            parent.left = nil
+        } else {
+            parent.right = nil
+        }
+    }
+}
+
 func (t *Tree) search(data int) *Node {
     var current *Node
     current = t.root
@@ -57,7 +94,7 @@ func (t *Tree) search(data int) *Node {
         if current.data == data {
             return current
         }
-        if current.data > data {
+        if data < current.data {
             current = current.left
         } else {
             current = current.right
