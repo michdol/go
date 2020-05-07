@@ -47,40 +47,62 @@ func (t *Tree) insert(data int) {
     }
 }
 
-func (t *Tree) delete(data int) {
+func (t *Tree) delete(data int) bool {
     var current, parent *Node
     current = t.root
-    if current == nil {
-        return false
-    }
-    for {
-        if current.data == data {
-            break
-        }
+    parent = current
+    for current != nil && current.data != data {
+        parent = current
         if data < current.data {
             current = current.left
         } else {
             current = current.right
         }
     }
-    parent = current.parent
+    if current == nil {
+        return false
+    }
     if current.left != nil && current.right != nil {
+        t.switchMinimumValue(data, current)
+    } else if current.left != nil && current.right == nil {
         if parent.left == current {
             parent.left = current.left
-            parent.left.right = current.right
         } else {
-            
+            parent.right = current.left
         }
-    } else if current.left != nil && current.right == nil {
-
     } else if current.right != nil && current.left == nil {
-
+        if parent.left == current {
+            parent.left = current.right
+        } else {
+            parent.right = current.right
+        }
     } else {
         if parent.left == current {
             parent.left = nil
         } else {
             parent.right = nil
         }
+    }
+    return true
+}
+
+func (t *Tree) switchMinimumValue(data int, node *Node) {
+    var current, previous *Node
+    previous = node.left
+    current = node.left
+    for current != nil {
+        previous = current
+        if current.left != nil {
+            current = current.left
+        } else {
+            current = current.right
+        }
+    }
+    node.data = current.data
+    if previous.left == current {
+        previous.left = nil
+    } else {
+        previous.right = nil
     }
 }
 

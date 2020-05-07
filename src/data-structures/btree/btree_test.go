@@ -75,7 +75,7 @@ func TestPreOrder(t *testing.T) {
 	tree.insert(1)
 	tree.insert(5)
 	tree.insert(2)
-	tree.preOrder(tree.root)
+	//tree.preOrder(tree.root)
 }
 
 func TestInOrder(t *testing.T) {
@@ -86,7 +86,7 @@ func TestInOrder(t *testing.T) {
 	tree.insert(1)
 	tree.insert(5)
 	tree.insert(2)
-	tree.inOrder(tree.root)
+	//tree.inOrder(tree.root)
 }
 
 func TestPostOrder(t *testing.T) {
@@ -104,7 +104,43 @@ func TestPostOrder(t *testing.T) {
 	tree.insert(1)
 	tree.insert(5)
 	tree.insert(2)
-	tree.postOrder(tree.root)
+	//tree.postOrder(tree.root)
+}
+
+func TestDeleteNoChildren(t *testing.T) {
+	tree := createTestingTree()
+
+	ret := tree.delete(5)
+	if ret != true {
+		t.Error(`delete operation did not return true`)
+	}
+	if tree.root.right != nil {
+		t.Error(`tree.root.right is not empty`)
+	}
+}
+
+func TestDeleteOneChild(t *testing.T) {
+	tree := createTestingTree()
+
+	ret := tree.delete(3)
+	if ret != true {
+		t.Error(`delete operation did not return true`)
+	}
+	if tree.root.left.data != 2 {
+		t.Error(`root's left should be 2`)
+	}
+}
+
+func TestDeleteTwoChildren(t *testing.T) {
+	tree := createTestingTree()
+
+	ret := tree.delete(4)
+	if ret != true {
+		t.Error(`delete operation did not return true`)
+	}
+	if tree.root.data != 2 {
+		t.Error(`root's left should be 2`)
+	}
 }
 
 func createTestingTree() *Tree {
