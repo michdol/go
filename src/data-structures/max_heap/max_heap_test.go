@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -113,5 +114,227 @@ func TestHasParent(t *testing.T) {
 	}
 	if heap.HasParent(5) != false {
 		t.Error(`HasParent(5) should return false`)
+	}
+}
+
+func TestLeft(t *testing.T) {
+	var ret int
+	var err error
+	heap := MaxHeap{
+		[]int{4, 3, 2, 1, 0},
+	}
+
+	ret, err = heap.Left(0)
+	if ret != 3 || err != nil {
+		t.Error(`Left(0) should return 3 without error`)
+	}
+
+	ret, err = heap.Left(1)
+	if ret != 1 || err != nil {
+		t.Error(`Left(1) should return 1 without error`)
+	}
+
+	ret, err = heap.Left(2)
+	if ret != -1 {
+		t.Error(`Left(2) should return nil`)
+	}
+	if err == nil {
+		t.Error(`Left(2) should return an error`)
+	}
+}
+
+func TestRight(t *testing.T) {
+	var ret int
+	var err error
+	heap := MaxHeap{
+		[]int{4, 3, 2, 1, 0},
+	}
+
+	ret, err = heap.Right(0)
+	if ret != 2 || err != nil {
+		t.Error(`Right(0) should return 2 without error`)
+	}
+
+	ret, err = heap.Right(1)
+	if ret != 0 || err != nil {
+		t.Error(`Right(1) should return 0 without error`)
+	}
+
+	ret, err = heap.Right(2)
+	if ret != -1 {
+		t.Error(`Right(2) should return nil`)
+	}
+	if err == nil {
+		t.Error(`Right(2) should return an error`)
+	}
+}
+
+func TestParent(t *testing.T) {
+	var ret int
+	var err error
+	heap := MaxHeap{
+		[]int{4, 3, 2, 1, 0},
+	}
+
+	ret, err = heap.Parent(1)
+	if ret != 4 || err != nil {
+		t.Error(`Parent(1) should return 4 without error`)
+	}
+	ret, err = heap.Parent(2)
+	if ret != 4 || err != nil {
+		t.Error(`Parent(2) should return 4 without error`)
+	}
+	ret, err = heap.Parent(5)
+	if ret != -1 || err == nil {
+		t.Error(`Parent(5) should return -1 and error`)
+	}
+	ret, err = heap.Parent(0)
+	if ret != -1 || err == nil {
+		t.Error(`Parent(0) should return -1 and error`)
+	}
+}
+
+func TestSwap(t *testing.T) {
+	heap := MaxHeap{
+		[]int{4, 3, 2, 1, 0},
+	}
+
+	if heap.Swap(0, 0) != nil {
+		t.Error(`Swap returned error when it should not`)
+	}
+	if heap.Items[0] != 4 {
+		t.Error(`Items array has changed when it should not`)
+	}
+
+	if heap.Swap(0, 1) != nil {
+		t.Error(`Swap returned error when it should not`)
+	}
+	if heap.Items[0] != 3 {
+		t.Error(`First item should be 3`)
+	}
+	if heap.Items[1] != 4 {
+		t.Error(`Second item should be 4`)
+	}
+
+	if heap.Swap(0, 4) != nil {
+		t.Error(`Swap returned error when it should not`)
+	}
+	if heap.Items[0] != 0 {
+		t.Error(`First item should be 0`)
+	}
+	if heap.Items[4] != 3 {
+		t.Error(`Last item should be 3`)
+	}
+
+	if heap.Swap(-1, 0) == nil {
+		t.Error(`Swap should return error for incorrect indices but it did not`)
+	}
+	if heap.Swap(1, 5) == nil {
+		t.Error(`Swap should return error for incorrect indices but it did not`)
+	}
+}
+
+func TestHeapify(t *testing.T) {
+	var heap MaxHeap
+	heap = MaxHeap{
+		[]int{4, 3, 2, 1, 5},
+	}
+
+	//				4
+	//			/		\
+	//		3			2
+	//	/		\
+	// 1		 5
+	heap.Heapify(4)
+
+	if heap.Items[0] != 5 {
+		t.Error(`Items[0] should be 5`)
+	}
+	if heap.Items[1] != 4 {
+		t.Error(`Items[1] should be 4`)
+	}
+	if heap.Items[2] != 2 {
+		t.Error(`Items[2] should be 2`)
+	}
+	if heap.Items[3] != 1 {
+		t.Error(`Items[3] should be 1`)
+	}
+	if heap.Items[4] != 3 {
+		t.Error(`Items[4] should be 3`)
+	}
+
+	heap = MaxHeap{
+		[]int{4, 3, 5, 1, 0},
+	}
+
+	//				4
+	//			/		\
+	//		3			5
+	//	/		\
+	// 1		 0
+	heap.Heapify(2)
+
+	if heap.Items[0] != 5 {
+		t.Error(`Items[0] should be 5`)
+	}
+	if heap.Items[1] != 3 {
+		t.Error(`Items[1] should be 3`)
+	}
+	if heap.Items[2] != 4 {
+		t.Error(`Items[2] should be 4`)
+	}
+	if heap.Items[3] != 1 {
+		t.Error(`Items[3] should be 1`)
+	}
+	if heap.Items[4] != 0 {
+		t.Error(`Items[4] should be 0`)
+	}
+}
+
+func TestInsert(t *testing.T) {
+	heap := MaxHeap{
+		[]int{4, 3, 2, 1, 0},
+	}
+
+	//				4
+	//			/		\
+	//		3			2
+	//	/		\
+	// 1		 0
+	heap.Insert(5)
+	if heap.Items[0] != 5 {
+		t.Error(`Items[0] should be 5`)
+	}
+	if heap.Items[1] != 3 {
+		t.Error(`Items[1] should be 3`)
+	}
+	if heap.Items[2] != 4 {
+		t.Error(`Items[2] should be 4`)
+	}
+	if heap.Items[3] != 1 {
+		t.Error(`Items[3] should be 1`)
+	}
+	if heap.Items[4] != 0 {
+		t.Error(`Items[4] should be 0`)
+	}
+	if heap.Items[5] != 2 {
+		t.Error(`Items[5] should be 2`)
+	}
+}
+
+func TestBuildHeap(t *testing.T) {
+	arr := []int{1, 16, 5, 30, 27, 17, 20, 2, 57, 3, 90}
+	heap := MaxHeap{
+		arr,
+	}
+	heap.BuildHeap()
+
+	fmt.Println(heap.Items)
+	expectedArray := []int{90, 57, 20, 30, 27, 17, 5, 2, 1, 3, 16}
+
+	for i, v := range expectedArray {
+		if heap.Items[i] != v {
+			t.Errorf("Expected i[%d], v[%d], actual %d", i, v, heap.Items[i])
+		}
 	}
 }
