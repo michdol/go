@@ -245,7 +245,30 @@ func TestHeapify(t *testing.T) {
 	//		3			2
 	//	/		\
 	// 1		 5
-	heap.Heapify(4)
+	heap.Heapify(1)
+
+	if heap.Items[0] != 4 {
+		t.Error(`Items[0] should be 4`)
+	}
+	if heap.Items[1] != 5 {
+		t.Error(`Items[1] should be 5`)
+	}
+	if heap.Items[2] != 2 {
+		t.Error(`Items[2] should be 2`)
+	}
+	if heap.Items[3] != 1 {
+		t.Error(`Items[3] should be 1`)
+	}
+	if heap.Items[4] != 3 {
+		t.Error(`Items[4] should be 3`)
+	}
+
+	//				4
+	//			/		\
+	//		5			2
+	//	/		\
+	// 1		 3
+	heap.Heapify(0)
 
 	if heap.Items[0] != 5 {
 		t.Error(`Items[0] should be 5`)
@@ -262,37 +285,11 @@ func TestHeapify(t *testing.T) {
 	if heap.Items[4] != 3 {
 		t.Error(`Items[4] should be 3`)
 	}
-
-	heap = MaxHeap{
-		[]int{4, 3, 5, 1, 0},
-	}
-
-	//				4
-	//			/		\
-	//		3			5
-	//	/		\
-	// 1		 0
-	heap.Heapify(2)
-
-	if heap.Items[0] != 5 {
-		t.Error(`Items[0] should be 5`)
-	}
-	if heap.Items[1] != 3 {
-		t.Error(`Items[1] should be 3`)
-	}
-	if heap.Items[2] != 4 {
-		t.Error(`Items[2] should be 4`)
-	}
-	if heap.Items[3] != 1 {
-		t.Error(`Items[3] should be 1`)
-	}
-	if heap.Items[4] != 0 {
-		t.Error(`Items[4] should be 0`)
-	}
 }
 
 func TestInsert(t *testing.T) {
-	heap := MaxHeap{
+	var heap MaxHeap
+	heap = MaxHeap{
 		[]int{4, 3, 2, 1, 0},
 	}
 
@@ -320,6 +317,98 @@ func TestInsert(t *testing.T) {
 	if heap.Items[5] != 2 {
 		t.Error(`Items[5] should be 2`)
 	}
+
+	heap = MaxHeap{
+		[]int{50, 20, 8, 5, 1, 3},
+	}
+	heap.Insert(9)
+	//				 50
+	//			/			\
+	//		20	   	 8
+	//	/		\		 /
+	// 5		 1  3
+	if heap.Items[0] != 50 {
+		t.Error(`Items[0] should be 50`)
+	}
+	if heap.Items[1] != 20 {
+		t.Error(`Items[1] should be 20`)
+	}
+	if heap.Items[2] != 9 {
+		t.Error(`Items[2] should be 9`)
+	}
+	if heap.Items[3] != 5 {
+		t.Error(`Items[3] should be 5`)
+	}
+	if heap.Items[4] != 1 {
+		t.Error(`Items[4] should be 1`)
+	}
+	if heap.Items[5] != 3 {
+		t.Error(`Items[5] should be 3`)
+	}
+	if heap.Items[6] != 8 {
+		t.Error(`Items[6] should be 8`)
+	}
+}
+
+func TestInsertToEmptyHeap(t *testing.T) {
+	heap := MaxHeap{
+		[]int{},
+	}
+
+	// []int{50, 20, 8, 5, 1, 3},
+	heap.Insert(50)
+	if heap.Items[0] != 50 {
+		t.Error(`Items[0] should be 50`)
+	}
+	heap.Insert(8)
+	if heap.Items[1] != 8 {
+		t.Error(`Items[1] should be 8`)
+	}
+	heap.Insert(5)
+	if heap.Items[2] != 5 {
+		t.Error(`Items[2] should be 5`)
+	}
+	heap.Insert(1)
+	if heap.Items[3] != 1 {
+		t.Error(`Items[3] should be 1`)
+	}
+
+	heap.Insert(20)
+	if heap.Items[1] != 20 {
+		t.Error(`Items[1] should be 20`)
+	}
+	if heap.Items[4] != 8 {
+		t.Error(`Items[4] should be 8`)
+	}
+	//				 50
+	//			/			\
+	//		20	   	 5
+	//	/		\
+	// 1		 8
+
+	heap.Insert(3)
+	if heap.Items[5] != 3 {
+		t.Error(`Items[5] should be 3`)
+	}
+	heap.Insert(60)
+	if heap.Items[0] != 60 {
+		t.Error(`Items[0] should be 60`)
+	}
+	if heap.Items[2] != 50 {
+		t.Error(`Items[2] should be 50`)
+	}
+	if heap.Items[5] != 3 {
+		t.Error(`Items[5] should be 4`)
+	}
+	if heap.Items[6] != 5 {
+		fmt.Println(heap.Items)
+		t.Error(`Items[6] should be 5`)
+	}
+	//				 60
+	//			/			\
+	//		20	   	50
+	//	/		\		 /  \
+	// 1		 8  3    5
 }
 
 func TestBuildHeap(t *testing.T) {

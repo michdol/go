@@ -74,76 +74,59 @@ func (h *MaxHeap) Swap(i int, j int) error {
 	return nil
 }
 
-func (h *MaxHeap) MaxHeapify(n int) {
-	if !h.HasParent(n) {
-		return
-	}
-	parentIdx := h.GetParentIndex(n)
-	parent := h.Items[parentIdx]
-	element := h.Items[n]
-	if element > parent {
-		h.Swap(n, parentIdx)
-		h.Heapify(parentIdx)
-	}
-}
-
 func (h *MaxHeap) Heapify(n int) {
-	var left, right, parent int
-	var leftIdx, rightIdx int
-	parent = h.Items[n]
-	fmt.Printf("Enter parent: %d\n", parent)
-	leftIdx = h.GetLeftIndex(n)
-	rightIdx = h.GetRightIndex(n)
+	// Heapify starts at position 'n' and goes to the bottom if Swap was called
+	parent := h.Items[n]
 	hasLeft := h.HasLeftChild(n)
 	hasRight := h.HasRightChild(n)
+	leftIdx := h.GetLeftIndex(n)
+	rightIdx := h.GetRightIndex(n)
 	if hasLeft && hasRight {
-		left = h.Items[leftIdx]
-		right = h.Items[rightIdx]
-		fmt.Printf("Parent: %d; Left: %d; Right %d; PIdx: %d\n", parent, left, right, n)
-		if left > parent && right > parent {
-			if left > right {
-				fmt.Printf("Swapping left %d with %d\n", left, parent)
-				h.Swap(n, leftIdx)
-			} else {
-				fmt.Printf("Swapping right %d with %d\n", right, parent)
-				h.Swap(n, rightIdx)
-			}
-		} else if left > parent && right <= parent {
-			fmt.Printf("Swapping left %d with %d\n", left, parent)
+		left := h.Items[leftIdx]
+		right := h.Items[rightIdx]
+		if left < parent && right < parent {
+			return
+		}
+		if left > parent && left > right {
 			h.Swap(n, leftIdx)
-		} else {
-			fmt.Printf("Swapping right %d with %d\n", right, parent)
+			h.Heapify(leftIdx)
+		} else if right > parent && right > left {
 			h.Swap(n, rightIdx)
+			h.Heapify(rightIdx)
 		}
 	} else if hasLeft {
-		left = h.Items[leftIdx]
+		left := h.Items[leftIdx]
 		if left > parent {
-			fmt.Printf("Swapping left %d with %d\n", left, parent)
 			h.Swap(n, leftIdx)
+			h.Heapify(leftIdx)
 		}
 	} else if hasRight {
-		right = h.Items[rightIdx]
+		right := h.Items[rightIdx]
 		if right > parent {
-			fmt.Printf("Swapping right %d with %d\n", right, parent)
 			h.Swap(n, rightIdx)
+			h.Heapify(rightIdx)
 		}
 	}
-	/*
-	if h.HasParent(n) {
-		fmt.Printf("Moving to parent %d\n", h.Items[h.GetParentIndex(n)])
-		h.Heapify(h.GetParentIndex(n))
-	}*/
 }
 
 func (h *MaxHeap) Insert(data int) {
+	// Insert bottoms-up until reaching root or parent node is greater than current node
 	h.Items = append(h.Items, data)
-	lastIdx := len(h.Items) - 1
-	h.Heapify(lastIdx)
+	var parentIdx, currentIdx int
+	currentIdx = len(h.Items) - 1
+	for h.HasParent(currentIdx) {
+		parentIdx = h.GetParentIndex(currentIdx)
+		if h.Items[currentIdx] > h.Items[parentIdx] {
+			h.Swap(parentIdx, currentIdx)
+			currentIdx = parentIdx
+		} else {
+			break
+		}
+	}
 }
 
 func (h *MaxHeap) BuildHeap() {
 	for i := int(len(h.Items) / 2 - 1); i >= 0; i-- {
-		fmt.Println(i)
 		h.Heapify(i)
 	}
 }
