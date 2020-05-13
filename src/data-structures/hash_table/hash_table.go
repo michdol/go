@@ -8,7 +8,11 @@ import (
 
 
 func main() {
-
+	ht := New()
+	ht.Put("a")
+	fmt.Printf("%+v\n", ht.array[9].Front().Value)
+	v, _ := stringHash("ab", 10)
+	fmt.Println("string hash", v)
 }
 
 type HashTable struct {
@@ -37,20 +41,34 @@ func (ht *HashTable) Put(key interface{}) error {
 		linkedList = list.New()
 		ht.array[hash] = linkedList
 	}
-	if !containsKey(key, linkedList.Front()) {
+	if !listContainsKey(key, linkedList.Front()) {
 		ht.array[hash].PushBack(key)
 	}
 	return nil
 }
 
+func (ht *HashTable) Get(key interface{}) (interface{}, error) {
+	var linkedList *list.List
+	hash, err := ht.HashFunction(key)
+	if err != nil {
+		return nil, err
+	}
+	length := len(ht.array)
+	if length < hash {
+		return nil, errors.New("TODO: implement extending array")
+	}
+
+	linkedList = ht.array[hash]
+	if linkedList == nil {
+		return nil, errors.New(fmt.Sprintf("List not present at index %d", hash))
+	}
+	return getValueFromList(key, linkedList.Front())
+}
+
 func (ht *HashTable) HashFunction(key interface{}) (int, error) {
-	var hash int
 	length := len(ht.array)
 	if data, ok := key.(string); ok {
-		hash = stringHash(data, length)
-		fmt.Println(hash)
-		// TODO:
-		return -1, nil
+		return stringHash(data, length)
 	} else if data, ok := key.(int); ok {
 		return integerHash(data, length)
 	} else {
@@ -58,7 +76,7 @@ func (ht *HashTable) HashFunction(key interface{}) (int, error) {
 	}
 }
 
-func containsKey(key interface{}, element *list.Element) bool {
+func listContainsKey(key interface{}, element *list.Element) bool {
 	for element != nil {
 		if element.Value == key {
 			return true
@@ -68,6 +86,16 @@ func containsKey(key interface{}, element *list.Element) bool {
 	return false
 }
 
+func getValueFromList(key interface{}, element *list.Element) (interface{}, error) {
+	for element != nil {
+		if element.Value == key {
+			return element.Value, nil
+		}
+		element = element.Next()
+	}
+	return nil, errors.New("Element not present in the list")
+}
+
 func integerHash(key int, arrayLength int) (int, error) {
 	if (arrayLength == 0) {
 		return -1, errors.New("Zero division error")
@@ -75,10 +103,13 @@ func integerHash(key int, arrayLength int) (int, error) {
 	return key % arrayLength, nil
 }
 
-func stringHash(key string, arrayLength int) int {
+func stringHash(key string, arrayLength int) (int, error) {
+	if len(key) == 0 {
+		return -1, errors.New("Key cannot be empty string")
+	}
 	sum := 0
 	for _, char := range key {
-		fmt.Println(char, sum)
+		sum += int(char - '0')
 	}
-	return 1
+	return sum % arrayLength, nil
 }
