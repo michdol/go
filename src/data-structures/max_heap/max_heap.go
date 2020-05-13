@@ -84,15 +84,14 @@ func (h *MaxHeap) Heapify(n int) {
 	if hasLeft && hasRight {
 		left := h.Items[leftIdx]
 		right := h.Items[rightIdx]
-		if left < parent && right < parent {
-			return
-		}
-		if left > parent && left > right {
-			h.Swap(n, leftIdx)
-			h.Heapify(leftIdx)
-		} else if right > parent && right > left {
-			h.Swap(n, rightIdx)
-			h.Heapify(rightIdx)
+		if left > parent || right > parent {
+			if left > right {
+				h.Swap(n, leftIdx)
+				h.Heapify(leftIdx)
+			} else {
+				h.Swap(n, rightIdx)
+				h.Heapify(rightIdx)
+			}
 		}
 	} else if hasLeft {
 		left := h.Items[leftIdx]

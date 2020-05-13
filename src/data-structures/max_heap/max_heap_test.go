@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -401,7 +400,6 @@ func TestInsertToEmptyHeap(t *testing.T) {
 		t.Error(`Items[5] should be 4`)
 	}
 	if heap.Items[6] != 5 {
-		fmt.Println(heap.Items)
 		t.Error(`Items[6] should be 5`)
 	}
 	//				 60
@@ -418,7 +416,6 @@ func TestBuildHeap(t *testing.T) {
 	}
 	heap.BuildHeap()
 
-	fmt.Println(heap.Items)
 	expectedArray := []int{90, 57, 20, 30, 27, 17, 5, 2, 1, 3, 16}
 
 	for i, v := range expectedArray {
