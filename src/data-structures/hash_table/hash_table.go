@@ -9,7 +9,7 @@ import (
 
 func main() {
 	ht := New()
-	ht.Put("a")
+	ht.Put("a", 1)
 	fmt.Printf("%+v\n", ht.array[9].Front().Value)
 	v, _ := stringHash("ab", 10)
 	fmt.Println("string hash", v)
@@ -25,7 +25,7 @@ func New() *HashTable {
 	}
 }
 
-func (ht *HashTable) Put(key interface{}) error {
+func (ht *HashTable) Put(key interface{}, value interface{}) error {
 	var linkedList *list.List
 	hash, err := ht.HashFunction(key)
 	if err != nil {
@@ -41,9 +41,13 @@ func (ht *HashTable) Put(key interface{}) error {
 		linkedList = list.New()
 		ht.array[hash] = linkedList
 	}
-	if !listContainsKey(key, linkedList.Front()) {
-		ht.array[hash].PushBack(key)
+	newEntry := [2]interface{}{key, value}
+	entry := getElementWithTheKey(key, linkedList.Front())
+	// Override entry
+	if entry != nil {
+		linkedList.Remove(entry)
 	}
+	linkedList.PushBack(newEntry)
 	return nil
 }
 
@@ -78,7 +82,8 @@ func (ht *HashTable) HashFunction(key interface{}) (int, error) {
 
 func listContainsKey(key interface{}, element *list.Element) bool {
 	for element != nil {
-		if element.Value == key {
+		elementKey := getElementOfArray(element.Value, 0)
+		if elementKey == key {
 			return true
 		}
 		element = element.Next()
@@ -86,14 +91,31 @@ func listContainsKey(key interface{}, element *list.Element) bool {
 	return false
 }
 
-func getValueFromList(key interface{}, element *list.Element) (interface{}, error) {
+func getElementWithTheKey(key interface{}, element *list.Element) *list.Element {
 	for element != nil {
-		if element.Value == key {
-			return element.Value, nil
+		elementKey := getElementOfArray(element.Value, 0)
+		if elementKey == key {
+			return element
 		}
 		element = element.Next()
 	}
-	return nil, errors.New("Element not present in the list")
+	return nil
+}
+
+func getElementOfArray(entry interface{}, index int) interface{} {
+	if ent, ok := entry.([2]interface{}); ok {
+		return ent[index]
+	}
+	return nil
+}
+
+func getValueFromList(key interface{}, element *list.Element) (interface{}, error) {
+	entry := getElementWithTheKey(key, element)
+	if entry == nil {
+		return nil, errors.New("Element not present in the list")
+	}
+	ret := getElementOfArray(entry.Value, 1)
+	return ret, nil
 }
 
 func integerHash(key int, arrayLength int) (int, error) {

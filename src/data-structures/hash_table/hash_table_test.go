@@ -28,7 +28,7 @@ func TestIntegerHash(t *testing.T) {
 
 func TestListContainsKey(t *testing.T) {
 	el := &list.Element{
-		Value: 1,
+		Value: [2]interface{}{1, "asd"},
 	}
 	if listContainsKey(2, el) != false {
 		t.Error(`listContainsKey should return false if list does not contain duplicates`)
@@ -46,11 +46,11 @@ func TestGetValueFromList(t *testing.T) {
 	var val interface{}
 	var err error
 	el := &list.Element{
-		Value: 1,
+		Value: [2]interface{}{1, "one"},
 	}
 	val, err = getValueFromList(1, el)
-	if val != 1 {
-		t.Errorf(`getValueFromList should return 1, returned %+v instead`, val)
+	if val != "one" {
+		t.Errorf(`getValueFromList should return "one", returned %+v instead`, val)
 	}
 	if err != nil {
 		t.Errorf(`getValueFromList returned error %+v`, err)
@@ -67,19 +67,22 @@ func TestGetValueFromList(t *testing.T) {
 func TestPutInt(t *testing.T) {
 	var err error
 	ht := New()
-	err = ht.Put(1)
+	err = ht.Put(1, "one")
 	if err != nil {
 		t.Error(`ht.Put(1) returned error`, err)
 	}
-	if ht.array[1].Back().Value != 1 {
+	if ht.array[1].Back().Value != [2]interface{}{1, "one"} {
 		t.Error(`ht.array[1] != 1`)
 	}
-	err = ht.Put(1)
+	err = ht.Put(1, "two")
 	if err != nil {
 		t.Error(`Second call to ht.Put(1) returned error`)
 	}
 	if ht.array[1].Len() != 1 {
 		t.Error(`ht.array[1].len() != 1 - array should not contain duplicates`)
+	}
+	if ht.array[1].Front().Value != [2]interface{}{1, "two"} {
+		t.Errorf(`Expected [2]interface{}{1, "two"}, got ht.array[1].Front().Value`)
 	}
 }
 
@@ -87,13 +90,13 @@ func TestGetInt(t *testing.T) {
 	var val interface{}
 	var err error
 	ht := New()
-	ht.Put(1)
+	ht.Put(1, "one")
 
 	val, err = ht.Get(1)
 	if err != nil {
 		t.Errorf(`Get(1) returned error %+v`, err)
 	}
-	if val != 1 {
+	if val != "one" {
 		t.Errorf(`Get(1) should return 1, returned %+v instead`, val)
 	}
 	val, err = ht.Get(2)
@@ -111,12 +114,12 @@ func TestPutString(t *testing.T) {
 	// "a" = 49
 	// len(ht.array) = 10
 	// 49 % 10 = 9
-	err = ht.Put("a")
+	err = ht.Put("a", 1)
 
 	if err != nil {
 		t.Errorf(`Put("a") should not return error;\n%+v`, err)
 	}
-	if ht.array[9] == nil && ht.array[9].Front().Value != "a" {
+	if ht.array[9] == nil && ht.array[9].Front().Value != [2]interface{}{"a", 1} {
 		t.Errorf(`Array should have "a" stored at index 9`)
 	}
 
@@ -124,7 +127,7 @@ func TestPutString(t *testing.T) {
 	// "ab" = 49 + 50 = 99
 	// len(ht.array) = 10
 	// 99 % 10 = 9
-	err = ht.Put("ab")
+	err = ht.Put("ab", 12)
 	if err != nil {
 		t.Errorf(`Put("ab") should not return error;\n%+v`, err)
 	}
@@ -133,7 +136,7 @@ func TestPutString(t *testing.T) {
 		t.Errorf(`List at index 9 should be 2 elements long; actual: %d`, length)
 	}
 	val := ht.array[9].Back().Value
-	if val != "ab" {
+	if val != [2]interface{}{"ab", 12} {
 		t.Errorf(`Element should be "ab"; actual: %+v`, val)
 	}
 }
@@ -142,14 +145,14 @@ func TestGetString(t *testing.T) {
 	var val interface{}
 	var err error
 	ht := New()
-	ht.Put("a")
-	ht.Put("ab")
+	ht.Put("a", 1)
+	ht.Put("ab", 12)
 
 	val, err = ht.Get("a")
 	if err != nil {
 		t.Errorf(`Get("a") returned error when should return nil;\n%+v`, err)
 	}
-	if val != "a" {
+	if val != 1 {
 		t.Errorf(`fuck`)
 	}
 }
