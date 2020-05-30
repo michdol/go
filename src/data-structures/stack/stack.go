@@ -48,3 +48,24 @@ func (s *Stack) clear() {
 		s.pop()
 	}
 }
+
+func (s Stack) Iterator() *StackIterator {
+	return &StackIterator{
+		s.len(),
+		s,
+	}
+}
+
+type StackIterator struct {
+	i 		int
+	stack Stack
+}
+
+func (si *StackIterator) HasNext() bool {
+	return si.i > 0
+}
+
+func (si *StackIterator) Next() (interface{}, error) {
+	si.i -= 1
+	return si.stack.pop()
+}

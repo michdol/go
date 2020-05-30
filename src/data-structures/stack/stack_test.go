@@ -99,3 +99,41 @@ func TestStackIsEmpty(t *testing.T) {
 		t.Error(`isEmpty should return false on stack with 1 element`)
 	}
 }
+
+func TestIterator(t *testing.T) {
+	var value interface{}
+	stack := new(Stack)
+	stack.push(1)
+	stack.push(2)
+	stack.push(3)
+
+	iterator := stack.Iterator()
+
+	for i := 2; i >= 0; i-- {
+		if iterator.HasNext() != true {
+			t.Fatalf(`HasNext returned false`)
+		}
+		value, _ = iterator.Next()
+		if value != i + 1 {
+			t.Errorf(`value is wrong %d`, value)
+		}
+	}
+
+	ret := iterator.HasNext()
+	if ret != false {
+		t.Errorf(`HasNext returned %t, expected false`, ret)
+	}
+
+	if stack.len() != 3 {
+		t.Errorf(`Stack's len %d, expected 3`, stack.len())
+	}
+
+	v, err := iterator.Next()
+	if v != -1 {
+		t.Error(`iterator should return -1`)
+	}
+
+	if err == nil {
+		t.Error(`iterator should return error, go nil instead`)
+	}
+}
