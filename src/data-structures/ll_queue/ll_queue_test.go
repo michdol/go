@@ -70,3 +70,44 @@ func TestEnqueue(t *testing.T) {
 		t.Error("Size() should return 3")
 	}
 }
+
+func TestDequeue(t *testing.T) {
+	var value interface{}
+	llq := LLQueue{}
+	llq.Enqueue(1)
+	llq.Enqueue(2)
+	llq.Enqueue(3)
+
+	value = llq.Dequeue()
+	if value != 1 {
+		t.Error("Dequeue() should return 1")
+	}
+	if llq.Size() != 2 {
+		t.Error("Size() should return 2")
+	}
+	if llq.first.data != 2 {
+		t.Error("First in queue should be 2")
+	}
+
+	value = llq.Dequeue()
+	if value != 2 {
+		t.Error("Dequeue() should return 2")
+	}
+	if llq.Size() != 1 {
+		t.Error("Size() should return 1")
+	}
+
+	value = llq.Dequeue()
+	if value != 3 {
+		t.Error("Dequeue() should return 3")
+	}
+	if llq.Size() != 0 {
+		t.Error("Size() should return 0")
+	}
+	if llq.IsEmpty() != true {
+		t.Error("IsEmpty() should return true")
+	}
+	if llq.first != nil || llq.last != nil {
+		t.Error("Queue should be empty")
+	}
+}

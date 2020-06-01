@@ -105,3 +105,23 @@ func TestPop(t *testing.T) {
 		t.Error("Stack's top should be nil")
 	}
 }
+
+func TestTop(t *testing.T) {
+	lls := LLStack{}
+	lls.Push(1)
+	lls.Push(2)
+
+	if lls.Top() != 2 {
+		t.Error("Top() should return 2")
+	}
+
+	lls.Pop()
+	if lls.Top() != 1 {
+		t.Error("Top() should return 1")
+	}
+
+	lls.Pop()
+	if lls.Top() != nil {
+		t.Error("Top() should return nil")
+	}
+}

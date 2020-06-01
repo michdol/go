@@ -51,3 +51,10 @@ func (lls *LLStack) Size() int {
 func (lls *LLStack) IsEmpty() bool {
 	return lls.size == 0
 }
+
+func (lls *LLStack) Top() interface{} {
+	if lls.IsEmpty() {
+		return nil
+	}
+	return lls.top.data
+}

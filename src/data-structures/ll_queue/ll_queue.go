@@ -43,5 +43,17 @@ func (llq *LLQueue) Enqueue(data interface{}) *Node {
 
 func (llq *LLQueue) Dequeue() interface{} {
 	// Get first node if exists
-
+	if llq.IsEmpty() {
+		return nil
+	}
+	first := llq.first
+	if first.HasNext() {
+		llq.first = first.next
+	}
+	llq.size -= 1
+	if first == llq.last {
+		llq.first = nil
+		llq.last = nil
+	}
+	return first.data
 }
