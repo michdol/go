@@ -274,4 +274,194 @@ func TestInsertAfterNodeIsNotAMember(t *testing.T) {
 	}
 }
 
-// page 164
+func TestRemoveKeyOnlyHead(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(2)
+
+	l.RemoveKey(1)
+	if l.head.Data() != 2 {
+		t.Fatal("Head should be 2")
+	}
+	if l.Size() != 1 {
+		t.Fatal("Size() should return 1")
+	}
+}
+
+func TestRemoveKeyWholeList(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(1)
+	l.PushBack(1)
+	l.PushBack(1)
+
+	l.RemoveKey(1)
+	if l.head != nil {
+		t.Fatal("Head should be nil")
+	}
+	if l.Size() != 0 {
+		t.Fatal("Size() should return 0")
+	}
+}
+
+func TestRemoveKeyMiddleElement(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(2)
+	l.PushBack(1)
+	l.PushBack(2)
+
+	l.RemoveKey(1)
+	if l.head.Data() != 2 {
+		t.Fatal("Head should be nil")
+	}
+	if l.head.Next().Data() != 2 {
+		t.Fatal("Head should be nil")
+	}
+	if l.Size() != 2 {
+		t.Fatal("Size() should return 2")
+	}
+}
+
+func TestRemoveKeyOnlyTail(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(2)
+	l.PushBack(2)
+	l.PushBack(1)
+
+	l.RemoveKey(1)
+	if l.head.Data() != 2 {
+		t.Fatal("Head should be nil")
+	}
+	if l.head.Next().Data() != 2 {
+		t.Fatal("Head should be nil")
+	}
+	if l.Size() != 2 {
+		t.Fatal("Size() should return 2")
+	}
+}
+
+func TestMaxMiddle(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(2)
+	l.PushBack(3)
+	l.PushBack(1)
+
+	ret, err := l.Max()
+	if err != nil {
+		t.Fatalf("Max() returned err: %s", err.Error())
+	}
+	if ret != 3 {
+		t.Fatalf("Max() should return 3")
+	}
+}
+
+func TestMaxFirst(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(3)
+	l.PushBack(2)
+	l.PushBack(1)
+	l.PushBack(1)
+
+	ret, err := l.Max()
+	if err != nil {
+		t.Fatalf("Max() returned err: %s", err.Error())
+	}
+	if ret != 3 {
+		t.Fatalf("Max() should return 3")
+	}
+}
+
+func TestMaxLast(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(2)
+	l.PushBack(1)
+	l.PushBack(3)
+
+	ret, err := l.Max()
+	if err != nil {
+		t.Fatalf("Max() returned err: %s", err.Error())
+	}
+	if ret != 3 {
+		t.Fatalf("Max() should return 3")
+	}
+}
+
+func TestMaxEmpty(t *testing.T) {
+	l := LinkedList{}
+
+	ret, err := l.Max()
+	if err != nil {
+		t.Fatalf("Max() returned err: %s", err.Error())
+	}
+	if ret != 0 {
+		t.Fatalf("Max() should return 0")
+	}
+}
+
+func TestMaxRecursiverLast(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(2)
+	l.PushBack(1)
+	l.PushBack(3)
+	var max interface{}
+	max = 0
+
+	ret, err := l.MaxRecursive(l.Head(), max)
+	if err != nil {
+		t.Fatalf("Max() returned err: %s", err.Error())
+	}
+	if ret != 3 {
+		t.Fatalf("Max() should return 3")
+	}
+}
+
+func TestReverse(t *testing.T) {
+	l := LinkedList{}
+	// Check that reversing empty list does't panic
+	l.Reverse()
+
+	l.PushBack(1)
+	l.PushBack(2)
+	l.PushBack(3)
+
+	l.Reverse()
+
+	if l.head.Data() != 3 {
+		t.Fatal("New head should be 3")
+	}
+	if l.head.next.data != 2 {
+		t.Fatal("New second node should be 2")
+	}
+	if l.head.next.next.data != 1 {
+		t.Fatal("New third node should be 1")
+	}
+}
+
+func TestReverseTwo(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+	l.PushBack(2)
+
+	l.Reverse()
+
+	if l.head.Data() != 2 {
+		t.Fatal("New head should be 2")
+	}
+	if l.head.next.data != 1 {
+		t.Fatal("New second node should be 1")
+	}
+}
+
+func TestReverseOne(t *testing.T) {
+	l := LinkedList{}
+	l.PushBack(1)
+
+	l.Reverse()
+
+	if l.head.Data() != 1 {
+		t.Fatal("New head should be 1")
+	}
+}

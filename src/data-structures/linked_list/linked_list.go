@@ -19,9 +19,28 @@ func (n *Node) Data() interface{} {
 	return n.data
 }
 
+func (self *Node) LessThan(other interface{}) (bool, error) {
+	switch v := self.data.(type) {
+	case int:
+		otherValue, ok := other.(int)
+		if !ok {
+			return false, errors.New(fmt.Sprintf("Invalid data type %+v", otherValue))
+		}
+		return v < otherValue, nil
+	// TODO: other cases
+	default:
+		fmt.Println(other)
+	}
+	return true, nil
+}
+
 type LinkedList struct {
 	head		*Node
 	size		int
+}
+
+func (self *LinkedList) Head() *Node {
+	return self.head
 }
 
 func (self *LinkedList) InsertAfter(first *Node, second *Node) {
@@ -30,6 +49,27 @@ func (self *LinkedList) InsertAfter(first *Node, second *Node) {
 		second.next = current.next
 		current.next = second
 		self.IncreaseSize()
+	}
+}
+
+func (self *LinkedList) RemoveKey(key interface{}) {
+	var previous *Node
+	current := self.head
+	for current != nil {
+		if current.Data() == key {
+			if current == self.head {
+				self.head = current.next
+				current.next = nil
+				current = self.head
+				self.DecreaseSize()
+				continue
+			}
+			previous.next = current.next
+			current.next = nil
+			self.DecreaseSize()
+		}
+		previous = current
+		current = current.next
 	}
 }
 
@@ -159,4 +199,49 @@ func (self *LinkedList) DecreaseSize() {
 
 func (self *LinkedList) Size() int {
 	return self.size
+}
+
+func (self *LinkedList) Max() (interface{}, error) {
+	var max interface{}
+	max = 0
+	current := self.head
+	for current != nil {
+		less, err := current.LessThan(max)
+		if err != nil {
+			return false, err
+		}
+		if !less {
+			max = current.Data()
+		}
+		current = current.next
+	}
+	return max, nil
+}
+
+func (self *LinkedList) MaxRecursive(current *Node, max interface{}) (interface{}, error) {
+	if current == nil {
+		return max, nil
+	}
+	less, err := current.LessThan(max)
+	if err != nil {
+		return false, err
+	}
+	if !less {
+		max = current.Data()
+	}
+	return self.MaxRecursive(current.next, max)
+}
+
+func (self *LinkedList) Reverse() {
+	first := self.head
+	var second *Node
+	var reverse *Node
+
+	for first != nil {
+		second = first.next
+		first.next = reverse
+		reverse = first
+		first = second
+	}
+	self.head = reverse
 }
