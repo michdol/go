@@ -23,14 +23,6 @@ func (self *DoubleNode) Data() interface{} {
 	return self.data
 }
 
-func NewNode(data interface{}, next, previous *DoubleNode) *DoubleNode {
-	return &DoubleNode{
-		data,
-		next,
-		previous,
-	}
-}
-
 type DoublyLinkedList struct {
 	front		*DoubleNode
 	back		*DoubleNode
@@ -130,6 +122,80 @@ func (self *DoublyLinkedList) emptyListError() error {
 	return errors.New("List is empty")
 }
 
-// InsertBefore
-// InsertAfter
-// RemoveNode
+func (self *DoublyLinkedList) InsertBefore(node *DoubleNode, data interface{}) error {
+	targetNode, err := self.GetNodeIfIsAMember(node)
+	if err != nil {
+		return err
+	}
+	newNode := &DoubleNode{
+		data: data,
+		next: targetNode,
+		previous: targetNode.previous,
+	}
+	if targetNode == self.front {
+		self.front = newNode
+	}
+	oldPrevious := targetNode.previous
+	if oldPrevious != nil {
+		oldPrevious.next = newNode
+	}
+	targetNode.previous = newNode
+	self.IncreaseSize()
+	return nil
+}
+
+func (self *DoublyLinkedList) GetNodeIfIsAMember(node *DoubleNode) (*DoubleNode, error) {
+	current := self.front
+	for current != nil {
+		if current == node {
+			return current, nil
+		}
+		current = current.next
+	}
+	return nil, errors.New("Passed node does not belong to the list")
+}
+
+func (self *DoublyLinkedList) InsertAfter(node *DoubleNode, data interface{}) error {
+	targetNode, err := self.GetNodeIfIsAMember(node)
+	if err != nil {
+		return err
+	}
+	newNode := &DoubleNode{
+		data: data,
+		next: targetNode.next,
+		previous: targetNode,
+	}
+	if targetNode == self.back {
+		self.back = newNode
+	}
+	oldNext := targetNode.next
+	if oldNext != nil {
+		oldNext.previous = newNode
+	}
+	targetNode.next = newNode
+	self.IncreaseSize()
+	return nil
+}
+
+func (self *DoublyLinkedList) RemoveNode(node *DoubleNode) error {
+	targetNode, err := self.GetNodeIfIsAMember(node)
+	if err != nil {
+		return err
+	}
+	self.DecreaseSize()
+	if targetNode == self.front {
+		self.front = targetNode.next
+	}
+	if targetNode == self.back {
+		self.back = targetNode.previous
+	}
+	previous := targetNode.previous
+	next := targetNode.next
+	if previous != nil {
+		previous.next = next
+	}
+	if next != nil {
+		next.previous = previous
+	}
+	return nil
+}

@@ -443,3 +443,185 @@ func TestRemoveBackClearTheList(t *testing.T) {
 		t.Fatal("Expected error")
 	}
 }
+
+func TestInsertBeforeEmptyList(t *testing.T) {
+	l := DoublyLinkedList{}
+	node := &DoubleNode{1, nil, nil}
+	err := l.InsertBefore(node, 2)
+	if err == nil || err.Error() != "Passed node does not belong to the list" {
+		t.Fatal("Expected error")
+	}
+	if l.Size() != 0 {
+		t.Fatal("Size() should return 0")
+	}
+}
+
+func TestInsertBeforeFront(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	oldFront := l.front
+
+	err := l.InsertBefore(oldFront, 2)
+	if err != nil {
+		t.Fatal("InsertBefore() returned error")
+	}
+	if l.Size() != 2 {
+		t.Fatal("Size() should return 2")
+	}
+	if l.front.data != 2 {
+		t.Fatal("Front should be 2")
+	}
+	if l.front.next != oldFront || l.front.next != l.back {
+		t.Fatal("Front's next should be old front")
+	}
+	if oldFront.previous != l.front || l.back.previous != l.front {
+		t.Fatal("Old front's previous should be new Front")
+	}
+
+}
+
+func TestInsertBeforeBack(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushBack(3)
+	oldBack := l.back
+
+	err := l.InsertBefore(oldBack, 2)
+	newNode := l.front.next
+	if err != nil {
+		t.Fatal("InsertBefore() returned error")
+	}
+	if l.Size() != 3 {
+		t.Fatal("Size() should return 3")
+	}
+	if newNode.data != 2 {
+		t.Fatal("Middle should be 2")
+	}
+	if newNode.previous != l.front {
+		t.Fatal("Middle's previous should be Front")
+	}
+	if l.front.data != 1 {
+		t.Fatal("Front should be 1")
+	}
+	if newNode.next != l.back {
+		t.Fatal("Middle's next should be Back")
+	}
+	if l.back.data != 3 {
+		t.Fatal("Back should be 3")
+	}
+	if l.back.previous != newNode {
+		t.Fatal("Back's previous should be Middle")
+	}
+}
+
+func TestInsertAfterBack(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushBack(2)
+	oldBack := l.back
+
+	err := l.InsertAfter(oldBack, 3)
+	if err != nil {
+		t.Fatal("InsertAfter() returned error")
+	}
+	if l.Size() != 3 {
+		t.Fatal("Size() should return 3")
+	}
+	if l.back.data != 3 {
+		t.Fatal("Back should be 3")
+	}
+	if l.back.previous.data != 2 {
+		t.Fatal("Back's previous should be 2")
+	}
+	if l.front.data != 1 {
+		t.Fatal("Front should be 1")
+	}
+	if l.front.next.next != l.back {
+		t.Fatal("Middle's next should be Back")
+	}
+}
+
+func TestRemoveNodeEmptyList(t *testing.T) {
+	l := DoublyLinkedList{}
+
+	err := l.RemoveNode(&DoubleNode{1, nil, nil})
+	if err == nil || err.Error() != "Passed node does not belong to the list" {
+		t.Fatal("Expected error")
+	}
+}
+
+func TestRemoveNodeOneElement(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+
+	err := l.RemoveNode(l.front)
+	if err != nil {
+		t.Fatal("RemoveNode() returned error")
+	}
+	if l.Size() != 0 {
+		t.Fatal("Size() should return 0")
+	}
+	if l.front != nil || l.back != nil {
+		t.Fatal("Front and Back should be nil")
+	}
+}
+
+func TestRemoveNodeMiddle(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushBack(2)
+	l.PushBack(3)
+
+	targetNode := l.front.next
+	if targetNode.data != 2 {
+		t.Fatal("Target node should be 2")
+	}
+
+	err := l.RemoveNode(targetNode)
+	if err != nil {
+		t.Fatal("RemoveNode() returned error")
+	}
+	if l.Size() != 2 {
+		t.Fatal("Size() should return 2")
+	}
+	if l.front.next != l.back || l.back.previous != l.front {
+		t.Fatal("Front and Back should point to each other")
+	}
+	if l.front.next.data != 3 {
+		t.Fatal("Second node should be 3")
+	}
+}
+
+func TestRemoveNodeFront(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushBack(2)
+
+	err := l.RemoveNode(l.front)
+	if err != nil {
+		t.Fatal("RemoveNode() returned error")
+	}
+	if l.Size() != 1 {
+		t.Fatal("Size() should return 1")
+	}
+	if l.front.data != 2 || l.back.data != 2 {
+		t.Fatal("Front and Back should be 2")
+	}
+}
+
+func TestRemoveNodeBack(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushBack(2)
+
+	err := l.RemoveNode(l.back)
+	if err != nil {
+		t.Fatal("RemoveNode() returned error")
+	}
+	if l.Size() != 1 {
+		t.Fatal("Size() should return 1")
+	}
+	if l.front.data != 1 || l.back.data != 1 {
+		t.Fatal("Front and Back should be 1")
+	}
+}
