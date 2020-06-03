@@ -179,3 +179,100 @@ func TestPushBack(t *testing.T) {
 		t.Fatal("Back's next should be nil")
 	}
 }
+
+func TestRemoveFrontEmpty(t *testing.T) {
+	l := DoublyLinkedList{}
+
+	ret, err := l.RemoveFront()
+	if ret != nil {
+		t.Fatal("RemoveFront() should return nil")
+	}
+	if err == nil || err.Error() != "List is empty" {
+		t.Fatal("Expected error")
+	}
+}
+
+func TestRemoveFrontOneItem(t *testing.T) {
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+
+	ret, err := l.RemoveFront()
+	if l.Size() != 0 {
+		t.Fatal("Size() should return 0")
+	}
+	if ret != 1 {
+		t.Fatal("RemoveFront() should return 1")
+	}
+	if err != nil {
+		t.Fatal("RemoveFront() should NOT return error")
+	}
+	if l.front != nil || l.back != nil {
+		t.Fatal("Front and Back should be nil")
+	}
+}
+
+func TestRemoveFrontTwoItems(t *testing.T) {
+	var ret interface{}
+	var err error
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushFront(2)
+
+	ret, err = l.RemoveFront()
+	if l.Size() != 1 {
+		t.Fatal("Size() should return 1")
+	}
+	if ret != 2 {
+		t.Fatal("RemoveFront() should return 2")
+	}
+	if err != nil {
+		t.Fatal("RemoveFront() should NOT return error")
+	}
+	if l.front != l.back {
+		t.Fatal("Front should be Back")
+	}
+	if l.front.previous != nil || l.front.next != nil {
+		t.Fatal("Front's previous and next should be nil")
+	}
+	if l.front.data != 1 {
+		t.Fatal("Front should be 1")
+	}
+}
+
+func TestRemoveFrontMoreThanTwoItems(t *testing.T) {
+	var ret interface{}
+	var err error
+	l := DoublyLinkedList{}
+	l.PushFront(1)
+	l.PushFront(2)
+	l.PushFront(3)
+
+	ret, err = l.RemoveFront()
+	if l.Size() != 2 {
+		t.Fatal("Size() should return 2")
+	}
+	if ret != 3 {
+		t.Fatal("RemoveFront() should return 3")
+	}
+	if err != nil {
+		t.Fatal("RemoveFront() should NOT return error")
+	}
+	if l.front.data != 2 {
+		t.Fatal("Front should be 2")
+	}
+	if l.back.data != 1 {
+		t.Fatal("Back should be 1")
+	}
+	if l.front.next != l.back {
+		t.Fatal("Front's next should be Back")
+	}
+	if l.front.previous != nil {
+		t.Fatal("Front's previous should be nil")
+	}
+	if l.back.previous != l.front {
+		t.Fatal("Back's previous should be Front")
+	}
+	if l.back.next != nil {
+		t.Fatal("Back's next should be nil")
+	}
+}

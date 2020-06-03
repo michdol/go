@@ -1,9 +1,8 @@
 package main
 
-// import (
-// 	"errors"
-// 	"fmt"
-// )
+import (
+	"errors"
+)
 
 
 type DoubleNode struct {
@@ -77,7 +76,6 @@ func (self *DoublyLinkedList) PushFront(data interface{}) {
 	self.IncreaseSize()
 }
 
-// PushBack
 func (self *DoublyLinkedList) PushBack(data interface{}) {
 	newNode := &DoubleNode{
 		data: data,
@@ -94,6 +92,22 @@ func (self *DoublyLinkedList) PushBack(data interface{}) {
 }
 
 // RemoveFront
+func (self *DoublyLinkedList) RemoveFront() (interface{}, error) {
+	if self.IsEmpty() {
+		return nil, errors.New("List is empty")
+	}
+	self.DecreaseSize()
+	value := self.front.data
+	// In case there is only 1 item initially this is set to nil
+	self.front = self.front.next
+	if self.size == 0 {
+		self.back = nil
+	} else {
+		self.front.previous = nil
+	}
+	return value, nil
+}
+
 // RemoveBack
 // InsertBefore
 // InsertAfter
