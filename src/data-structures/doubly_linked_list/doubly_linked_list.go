@@ -94,11 +94,12 @@ func (self *DoublyLinkedList) PushBack(data interface{}) {
 // RemoveFront
 func (self *DoublyLinkedList) RemoveFront() (interface{}, error) {
 	if self.IsEmpty() {
-		return nil, errors.New("List is empty")
+		return nil, self.emptyListError()
 	}
 	self.DecreaseSize()
 	value := self.front.data
-	// In case there is only 1 item initially this is set to nil
+	// In case there is only 1 item before the function is called
+	// self.front is set to nil
 	self.front = self.front.next
 	if self.size == 0 {
 		self.back = nil
@@ -108,19 +109,27 @@ func (self *DoublyLinkedList) RemoveFront() (interface{}, error) {
 	return value, nil
 }
 
-// RemoveBack
+func (self *DoublyLinkedList) RemoveBack() (interface{}, error) {
+	if self.IsEmpty() {
+		return nil, self.emptyListError()
+	}
+	self.DecreaseSize()
+	value := self.back.data
+	// In case there is only 1 item before the function is called
+	// self.back is set to nil
+	self.back = self.back.previous
+	if self.size == 0 {
+		self.front = nil
+	} else {
+		self.back.next = nil
+	}
+	return value, nil
+}
+
+func (self *DoublyLinkedList) emptyListError() error {
+	return errors.New("List is empty")
+}
+
 // InsertBefore
 // InsertAfter
 // RemoveNode
-
-func (self *DoublyLinkedList) GetNodeIfIsAMember(node *DoubleNode) *DoubleNode {
-	current := self.front
-	for current != nil {
-		if current == node {
-			return current
-		}
-		current = current.next
-	}
-	return nil
-}
-
