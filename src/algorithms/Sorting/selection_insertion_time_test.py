@@ -32,7 +32,7 @@ input = input_{input}()
 from __main__ import selection_sort, insertion_sort
 alg = {algorithm}
 '''.format(input=input_size, algorithm=algorithm)
-  print(timeit.Timer('alg(input)', setup=setup).repeat(1, 1))
+  print(timeit.Timer('arr = input[:];alg(arr)', setup=setup).repeat(1, 1))
 
 
 def get_args(*args) -> Tuple[str, str]:
